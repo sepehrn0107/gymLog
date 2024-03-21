@@ -1,6 +1,6 @@
 import request from 'supertest';
 import server from '../server'; 
-import User from '../models/User';
+import User from '../models/user';
 
 beforeEach(async () => {
   await User.deleteMany({});
