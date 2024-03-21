@@ -2,15 +2,16 @@ import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import userRoutes from './routes/UserRoutes';
 
 dotenv.config();
 
-const app: Express = express();
+export const app: Express = express();
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(userRoutes);
 const uri: string =
     process.env.MONGODB_URI || 'mongodb://localhost:27017/your-app';
 
@@ -29,6 +30,8 @@ app.get('/health', (_req: Request, res: Response) => {
 
 const PORT: string | number = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server is running on PORT: ${PORT}`);
 });
+
+export default server;
