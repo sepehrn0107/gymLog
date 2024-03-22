@@ -2,7 +2,7 @@ import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import userRoutes from './routes/UserRoutes';
+import router from './routes/router';
 
 dotenv.config();
 
@@ -11,7 +11,8 @@ export const app: Express = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(userRoutes);
+app.use(router);
+
 const uri: string =
     process.env.MONGODB_URI || 'mongodb://localhost:27017/your-app';
 

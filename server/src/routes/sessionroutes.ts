@@ -1,12 +1,16 @@
 import express from 'express';
-import sessionController from '../controllers/SessionController';
+import {getSessionById, updateSession, deleteSession, createSession, getSessionByUserId} from '../controllers/sessionController';
 
 const router = express.Router();
 
-router.get('/:id', sessionController.getSessionById);
-router.get('/user/:userId', sessionController.getSessionByUserId);
-router.post('/', sessionController.createSession);
-router.put('/:id', sessionController.updateSession);
-router.delete('/:id', sessionController.deleteSession);
+router.route('/api/session/:id')
+  .get(getSessionById)
+  .put(updateSession)
+  .delete(deleteSession);
+
+router.route('/api/session')
+  .post(createSession);
+
+router.get('/api/session/:userId', getSessionByUserId);
 
 export default router;

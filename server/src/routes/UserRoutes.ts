@@ -3,7 +3,7 @@ import { createUser, loginUser, logoutUser } from '../controllers/UserController
 
 const router = express.Router();
 
-router.post('/api/users', createUser);
+router.post('/api/users/register', createUser);
 router.post('/api/users/login', loginUser);
 router.post('/api/users/logout', logoutUser);
 

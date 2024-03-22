@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt';
 export const createUser = async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
   const user = new User({ name, email, password, sessions: [] });
+  user.loggedIn = true;
   await user.save();
   res.status(201).json(user);
 };
