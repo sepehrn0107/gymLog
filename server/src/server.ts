@@ -3,6 +3,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import router from './routes/router';
+import morgan from 'morgan';
 
 dotenv.config();
 
@@ -11,6 +12,10 @@ export const app: Express = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+/*
+Morgan used to debugging server
+*/
+app.use(morgan('dev'));
 app.use(router);
 
 const uri: string =
