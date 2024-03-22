@@ -19,9 +19,13 @@ const userSchema = new mongoose.Schema({
   sessions: [{
     sessions: [{
       type: mongoose.Schema.Types.ObjectId,
-      re: 'Session'
+      ref: 'Session'
     }]
-  }]
+  }],
+  loggedIn: {
+    type: Boolean,
+    default: false
+  }
   // other fields go here
 });
 
