@@ -4,7 +4,9 @@ import bcrypt from 'bcrypt';
 
 export const createUser = async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
-  const user = new User({ name, email, password, sessions: [] });
+  let role: string;
+  role = req.body.role ? req.body.role : 'user';
+  const user = new User({ name, email, password, sessions: [], role });
   user.loggedIn = true;
   await user.save();
   res.status(201).json(user);

@@ -1,6 +1,10 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
-
+enum Role {
+  User = 'user',
+  Admin = 'admin',
+  SuperAdmin = 'superadmin'
+}
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -25,6 +29,11 @@ const userSchema = new mongoose.Schema({
   loggedIn: {
     type: Boolean,
     default: false
+  },
+  roles: {
+    type: String,
+    enum: Object.values(Role),
+    default: Role.User
   }
   // other fields go here
 });
