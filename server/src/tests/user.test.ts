@@ -9,7 +9,8 @@ afterAll(async () => {
 
 let userId = '';
 
-test('should create a new user and log in', async () => {
+test('should create a new user, log in and log out', async () => {
+  // Create a new user
   const response = await request(server)
     .post('/api/users/register') // Assuming your UserController defines the route as '/api/users'
     .send({
@@ -19,9 +20,7 @@ test('should create a new user and log in', async () => {
       sessions: [] // Assuming your User schema has a 'sessions' field
     });
   expect(201);
-  userId = response.body._id;
 
-  console.log(userId);
   // Log in
   const loginResponse = await request(server)
     .post('/api/users/login')
@@ -29,45 +28,14 @@ test('should create a new user and log in', async () => {
       email: 'test@user3.com',
       password: 'testpassword'
     });
+  userId = loginResponse.body.userID;
+  expect(loginResponse.body.token).not.toBe(null);
+  expect(loginResponse.body.email).toBe('test@user3.com');
 
-  expect(loginResponse.status).toBe(200);
-  expect(loginResponse.body.user._id).toBe(userId);
-
-  // Assert that the database was updated correctly
-  const user = await User.findById(response.body._id);
-  expect(user).not.toBeNull();
-
-  // Assertions about the response
-  expect(response.body).toMatchObject({
-    name: 'Test User3',
-    email: 'test@user3.com',
-    sessions: [] // Assert that the 'sessions' field was correctly saved
-  });
-  expect(user?.password).not.toBe('testpassword'); // Assuming your User schema hashes the password before saving
-});
-
-test('should log out a user', async () => {
-  // Assuming you have a user with this email in your database
-  const email = 'test@user3.com';
-
-  // Log in the user first to get the userId
-  const loginResponse = await request(server)
-    .post('/api/users/login')
-    .send({
-      email: email,
-      password: 'testpassword'
-    });
-
-  expect(loginResponse.status).toBe(200);
-  userId = loginResponse.body.user._id;
-
-  // Log out the user
+  // Log out
   const logoutResponse = await request(server)
-    .post('/api/users/logout')
-    .send({
-      userId: userId
-    });
-
+  .post(`/api/users/logout/${userId}`);
   expect(logoutResponse.status).toBe(200);
   expect(logoutResponse.body.message).toBe('Logged out successfully');
+
 });

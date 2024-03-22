@@ -43,3 +43,14 @@ export const deleteSession = async (req: Request, res: Response) => {
   await Session.findByIdAndDelete(req.params.id);
   res.status(204).send();
 };
+
+//Add ExerciseToSession
+  //add an exercise to ongoing session
+//Add setToExercise
+  // add a set to ongoing Exercise
+//Add rpeToSet
+  //Add rpe to ongoing set
+//Add repetitionsToSet
+  //Add repetitions to ongoing set
+//Add typeOfSetToSet
+  
