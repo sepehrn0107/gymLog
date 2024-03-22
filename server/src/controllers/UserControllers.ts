@@ -30,7 +30,7 @@ export const loginUser = async (req: Request, res: Response) => {
   res.json({ message: 'Logged in successfully', user });
 };
 export const logoutUser = async (req: Request, res: Response) => {
-  const { userId } = req.body;
+  const { userId } = req.params as { userId: string };
 
   // Find the user by userId
   const user = await User.findById(userId);

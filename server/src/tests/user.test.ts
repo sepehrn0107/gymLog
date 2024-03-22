@@ -11,7 +11,7 @@ let userId = '';
 
 test('should create a new user and log in', async () => {
   const response = await request(server)
-    .post('/api/users') // Assuming your UserController defines the route as '/api/users'
+    .post('/api/users/register') // Assuming your UserController defines the route as '/api/users'
     .send({
       name: 'Test User3',
       email: 'test@user3.com',
