@@ -6,7 +6,7 @@ import {
   getExercisesByBodyPart, 
   getExercisesByCategory,
   getExercisesByUser 
-} from '../controllers/exerciseController';
+} from '../controllers/ExerciseController';
 
 const router = express.Router();
 
