@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
-import Exercise from '../models/user';
+import Exercise from '../models/exercise';
 
 export const createExercise = async (req: Request, res: Response) => {
-  const { user, name, about, body_part, category } = req.body;
+  const { name, about, body_part, category } = req.body;
+  const user = req.params.userId; // Get userId from URL
   const exercise = new Exercise({ user, name, about, body_part, category });
   await exercise.save();
   res.status(201).json(exercise);
@@ -18,6 +19,17 @@ export const getExerciseById = async (req: Request, res: Response) => {
     res.json(exercise);
   } else {
     res.status(404).json({ message: 'Exercise not found' });
+  }
+};
+export const getExercisesByUser = async (req: Request, res: Response) => {
+  const { userId }   = req.params;
+  console.log('userid', userId);
+  const exercises = await Exercise.find({ user: userId }); // Changed from { userId } to { user: userId }
+  console.log('exercises', exercises);
+  if (exercises.length > 0) {
+    res.json(exercises);
+  } else {
+    res.status(404).json({ message: 'No exercises found for this user' });
   }
 };
 export const getExercisesByBodyPart = async (req: Request, res: Response) => {
@@ -36,14 +48,5 @@ export const getExercisesByCategory = async (req: Request, res: Response) => {
     res.json(exercises);
   } else {
     res.status(404).json({ message: 'No exercises found for this category' });
-  }
-};
-export const getExercisesByUser = async (req: Request, res: Response) => {
-  const { user } = req.params;
-  const exercises = await Exercise.find({ user });
-  if (exercises.length > 0) {
-    res.json(exercises);
-  } else {
-    res.status(404).json({ message: 'No exercises found for this user' });
   }
 };

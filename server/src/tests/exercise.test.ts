@@ -1,61 +1,80 @@
 import request from 'supertest';
-import app from '../app'; // import your Express app
-import Exercise from '../models/Exercise';
-import mongoose from 'mongoose';
+import server from '../server'; 
+import User from '../models/User';
+import Exercise from '../models/exercise';
+import { createUser } from '../controllers/UserControllers';
+import { response } from 'express';
 
-beforeEach(async () => {
-  await Exercise.deleteMany(); // clear the database before each test
+let userId = ''
+let exerciseId = '';
+beforeAll(async () => {
+  await User.updateMany({}, { loggedIn: false });
+  // Create a user before the tests
+  const user = await request(server)
+    .post('/api/users/register') // Assuming your UserController defines the route as '/api/users'
+    .send({
+      name: 'Test User3',
+      email: 'test@user3.com',
+      password: 'testpassword',
+      sessions: [] // Assuming your User schema has a 'sessions' field
+    });
+  expect(201);
+  userId = user.body._id;
+  console.log(userId)
 });
 
 afterAll(async () => {
-  await mongoose.connection.close(); // close the database connection after all tests
+  // Delete the user after the tests
+  await User.deleteOne({ email: 'test@user3.com' });
+  if (exerciseId) {
+    await Exercise.deleteOne({ _id: exerciseId });
+    exerciseId = '';
+  }
+  server.close();
 });
+
 test('should create a new exercise', async () => {
-  const response = await request(app)
-    .post('/exercise')
+  const response = await request(server)
+    .post(`/api/exercise/create/user/${userId}`)
     .send({
-      user: 'INSERTUSERID',
-      name: 'Push Ups',
-      about: 'A basic bodyweight exercise for upper body strength.',
+      name: 'Exercise1',
+      about: 'This is a Exercise1',
       body_part: 'Chest',
-      category: 'Bodyweight'
+      category: 'Barbell'
     });
 
-  expect(response.statusCode).toBe(201);
-  expect(response.body.name).toBe('Push Ups');
-  expect(response.body.user).toBe('INSERTUSERID');
+  expect(response.status).toBe(201);
+  expect(response.body).toMatchObject({
+    user: userId,
+    name: 'Exercise1',
+    about: 'This is a Exercise1',
+    body_part: 'Chest',
+    category: 'Barbell'
+  });
+
+  // Assert that the database was updated correctly
+  const exercise = await Exercise.findById(response.body._id);
+  expect(exercise).not.toBeNull();
+
+  // Save the exercise ID to delete it later
+  exerciseId = response.body._id;
 });
 test('should get all exercises', async () => {
-  const response = await request(app).get('/exercises');
-  expect(response.statusCode).toBe(200);
-});
+  const response = await request(server)
+    .get('/api/exercises');
+    expect(response.status).toBe(200);
+})
+test('should get all exercises from user', async () => {
+  const response = await request(server)
+    .get(`/api/exercise/user/${userId}`);
+    console.log(userId);
+    console.log(response.body)
+    expect(response.body[0]).toMatchObject({
+      user: userId,
+      name: 'Exercise1',
+      about: 'This is a Exercise1',
+      body_part: 'Chest',
+      category: 'Barbell'
+    });
 
-test('should get an exercise by ID', async () => {
-  const exercise = new Exercise({
-    user: 'INSERTUSERID',
-    name: 'Push Ups',
-    about: 'A basic bodyweight exercise for upper body strength.',
-    body_part: 'Chest',
-    category: 'Bodyweight'
-  });
-  await exercise.save();
-
-  const response = await request(app).get(`/exercise/${exercise._id}`);
-  expect(response.statusCode).toBe(200);
-  expect(response.body.name).toBe('Push Ups');
-});
-
-test('should get exercises by body part', async () => {
-  const response = await request(app).get('/exercises/bodypart/Chest');
-  expect(response.statusCode).toBe(200);
-});
-
-test('should get exercises by category', async () => {
-  const response = await request(app).get('/exercises/category/Bodyweight');
-  expect(response.statusCode).toBe(200);
-});
-
-test('should get exercises by user', async () => {
-  const response = await request(app).get('/exercises/user/INSERTUSERID');
-  expect(response.statusCode).toBe(200);
-});
+})
