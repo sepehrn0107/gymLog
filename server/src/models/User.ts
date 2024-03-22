@@ -16,6 +16,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  sessions: [{
+    sessions: [{
+      type: mongoose.Schema.Types.ObjectId,
+      re: 'Session'
+    }]
+  }]
   // other fields go here
 });
 

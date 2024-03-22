@@ -10,10 +10,6 @@ const sessionSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  exercises: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Exercise'
-  }],
   date: {
     start: {
       type: Date,
@@ -31,7 +27,21 @@ const sessionSchema = new mongoose.Schema({
   },
   note: {
     type: String
-  }
+  },
+  exercises: [{
+    exercise: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Exercise'
+    },
+    repetitions: Number,
+    sets: Number,
+    rpe: Number,
+    type_of_set: {
+      type: String,
+      enum: ['warmup', 'working', 'failure'],
+      required: true
+    }
+  }],
 });
 
 const Session = mongoose.model('Session', sessionSchema);
