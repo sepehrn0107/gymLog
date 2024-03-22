@@ -16,7 +16,7 @@ router.route('/api/exercise/create/user/:userId')
 router.route('/api/exercise/:id')
   .get(getExerciseById);
 
-router.route('/api/exercise/:user')
+router.route('/api/exercise/user/:userId')
   .get(getExercisesByUser);
 
 router.route('/api/exercises')
