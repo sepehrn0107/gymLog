@@ -78,15 +78,3 @@ test('should get all exercises from user', async () => {
     });
 
 })
-
-// test('should get exercises by userId', async () => {
-//   const response = await request(server)
-//     .get(`/api/exercise/user/${userId}`);
-
-//   expect(response.status).toBe(200);
-//   expect(Array.isArray(response.body)).toBe(true);
-//   response.body.forEach((exercise: { user: any; }) => {
-//     console.log('exercise user:', exercise.user);
-//     expect(exercise.user).toEqual(userId);
-//   });
-// });
