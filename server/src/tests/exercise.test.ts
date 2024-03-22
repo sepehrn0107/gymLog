@@ -2,7 +2,6 @@ import request from 'supertest';
 import server from '../server'; 
 import User from '../models/User';
 import Exercise from '../models/exercise';
-import { createUser } from '../controllers/UserControllers';
 import { response } from 'express';
 
 let userId = ''
@@ -33,6 +32,7 @@ afterAll(async () => {
   server.close();
 });
 
+
 test('should create a new exercise', async () => {
   const response = await request(server)
     .post(`/api/exercise/create/user/${userId}`)
@@ -59,11 +59,13 @@ test('should create a new exercise', async () => {
   // Save the exercise ID to delete it later
   exerciseId = response.body._id;
 });
+
 test('should get all exercises', async () => {
   const response = await request(server)
     .get('/api/exercises');
     expect(response.status).toBe(200);
-})
+});
+
 test('should get all exercises from user', async () => {
   const response = await request(server)
     .get(`/api/exercise/user/${userId}`);
@@ -77,4 +79,4 @@ test('should get all exercises from user', async () => {
       category: 'Barbell'
     });
 
-})
+});
