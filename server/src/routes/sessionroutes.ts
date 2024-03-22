@@ -8,9 +8,9 @@ router.route('/api/session/:id')
   .put(updateSession)
   .delete(deleteSession);
 
-router.route('/api/session')
+router.route('/api/session/user/:userId')
   .post(createSession);
 
-router.get('/api/session/:userId', getSessionByUserId);
+router.get('/api/session/user/:userId', getSessionByUserId);
 
 export default router;

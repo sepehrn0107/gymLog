@@ -7,12 +7,29 @@ export const getSessionById = async (req: Request, res: Response) => {
 };
 
 export const getSessionByUserId = async (req: Request, res: Response) => {
-  const sessions = await Session.find({ user: req.params.userId });
-  res.json(sessions);
+  const { userId } = req.params;
+  const sessions = await Session.find({ user: userId });
+  if (sessions.length > 0) {
+    res.json(sessions);
+  } else {
+    res.status(404).json({ message: 'No sessions found for this user' });
+  }
 };
 
 export const createSession = async (req: Request, res: Response) => {
-  const session = new Session(req.body);
+  const { userId } = req.params;
+
+  const { name, date, type, note, exercises } = req.body;
+
+  const session = new Session({
+    user: userId,
+    name: name,
+    date: date,
+    type: type,
+    note: note,
+    exercises: exercises
+  });
+
   await session.save();
   res.status(201).json(session);
 };
