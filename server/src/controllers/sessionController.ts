@@ -1,5 +1,10 @@
 import Session from '../models/session';
 import { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+import { authenticateToken } from '../middlewares/authenticateToken';
+
+dotenv.config();
 
 export const getSessionById = async (req: Request, res: Response) => {
   const session = await Session.findById(req.params.id);
@@ -17,8 +22,8 @@ export const getSessionByUserId = async (req: Request, res: Response) => {
 };
 
 export const createSession = async (req: Request, res: Response) => {
-  const { userId } = req.params;
-
+  const userId = req.user?.id;
+  console.log('userId', userId);
   const { name, date, type, note, exercises } = req.body;
 
   const session = new Session({
@@ -44,7 +49,7 @@ export const deleteSession = async (req: Request, res: Response) => {
   res.status(204).send();
 };
 
-//Add ExerciseToSession
+//Add UpdateSessionExercise
   //add an exercise to ongoing session
 //Add setToExercise
   // add a set to ongoing Exercise
@@ -53,4 +58,8 @@ export const deleteSession = async (req: Request, res: Response) => {
 //Add repetitionsToSet
   //Add repetitions to ongoing set
 //Add typeOfSetToSet
+// remove Exercise
+  // remove an exercise from ongoing session
+// remove Set
+  // remove a set from ongoing exercise
   

@@ -21,7 +21,6 @@ export const createUser = async (req: Request, res: Response) => {
     // sameSite: 'none', // Uncomment this line if you're using HTTPS and your frontend and backend are on different domains
   });
 
-  // Exclude password from the response
   const userResponse = user.toObject();
 
   res.status(201).json({ id: userResponse._id, email: userResponse.email, token });
@@ -52,6 +51,7 @@ export const loginUser = async (req: Request, res: Response) => {
       // secure: true, // Uncomment this line if you're using HTTPS
       // sameSite: 'none', // Uncomment this line if you're using HTTPS and your frontend and backend are on different domains
     });
+    user.loggedIn = true;
 
     res.json({ message: 'Logged in successfully', token, userID: user._id, email: user.email});
   } catch (error) {
@@ -60,7 +60,8 @@ export const loginUser = async (req: Request, res: Response) => {
   }
 };
 export const logoutUser = async (req: Request, res: Response) => {
-  const userId = req.params.userId;
+  const userId = req.user?.id;
+  console.log('userId', userId);
   try {
     const user = await User.findById(userId);
     if (user) {
